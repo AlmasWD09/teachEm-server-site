@@ -1,24 +1,25 @@
 const express = require('express')
-const app = express()
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const cors = require('cors')
-const cookieParser = require('cookie-parser')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const app = express()
 const port = process.env.PORT || 5000
 
 
 
 // middleware
-const corsOptions = {
-  origin: ['http://localhost:5173', 'https://teachem-a2347.web.app'],
-  credentials: true,
-  optionSuccessStatus: 200,
-}
-app.use(cors(corsOptions))
+app.use(
+  cors({
+    origin:['http://localhost:5173','https://teachem-a2347.web.app'],
+    credentials: true
+  })
+)
 app.use(express.json())
 app.use(cookieParser())
+
 
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.1kmrgvs.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
@@ -52,17 +53,19 @@ async function run() {
     })
 
     // middlewares 
-    const verifyToken = (req, res, next) => {
-      if (!req.headers.authorization) {
-        return res.status(401).send({ message: 'unauthorized access' });
+    const verifyToken = async (req, res, next)=>{
+      const token = req.cookies?.token
+      if(!token){
+        return res.status(401).send('Unauthorized access')
       }
-      const token = req.headers.authorization.split(' ')[1];
-      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
-        if (err) {
-          return res.status(401).send({ message: 'unauthorized access' })
+      jwt.verify(token,process.env.ACCESS_TOKEN_SECRET,(error,decoded)=>{
+        if(error){
+          return res.status(403).send({
+            message:'forbidden access'
+          })
         }
-        req.decoded = decoded;
-        next();
+        req.decoded = decoded
+        next()
       })
     }
 
