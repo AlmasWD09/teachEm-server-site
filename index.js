@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000
 // middleware
 app.use(
   cors({
-    origin:['http://localhost:5173','https://teach-em-server-site-main-9fqd45xwg-server-site-deploy.vercel.app'],
+    origin:['http://localhost:5173','https://teach-em-server-site.vercel.app'],
     credentials: true
   })
 )
