@@ -57,9 +57,15 @@ async function run() {
       .send({ success: true })
     })
 
+    app.post('/logout', async(req, res)=>{
+      const user = req.body
+      res.clearCookie('token', {maxAge: 0}).send({ success: true })
+    })
+
     // middlewares 
     const verifyToken = async (req, res, next)=>{
       const token = req.cookies?.token
+      console.log(token, 'line 63');
       if(!token){
         return res.status(401).send('Unauthorized access')
       }
