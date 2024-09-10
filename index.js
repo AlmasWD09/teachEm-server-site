@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000
 // middleware
 app.use(
   cors({
-    origin:['http://localhost:5173','https://teach-em-server-site-main.vercel.app'],
+    origin:['http://localhost:5173','https://teach-em-a044e.web.app'],
     credentials: true
   })
 )
@@ -192,6 +192,12 @@ async function run() {
       const result = await usersCollection.findOne(query)
       res.send(result)
     })
+
+    app.get('/user/role/api/get/:email', async (req, res) => {
+      const email = req.params.email;
+      const result = await usersCollection.findOne({ email: email });
+      res.send(result);
+  });
 
     app.patch('/user/api/role/update/:id', async (req, res) => {
       const id = req.params.id;
