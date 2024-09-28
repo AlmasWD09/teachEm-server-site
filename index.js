@@ -13,7 +13,7 @@ const port = process.env.PORT || 5000
 // middleware
 app.use(
   cors({
-    origin:['http://localhost:5173','https://teach-em-a044e.web.app'],
+    origin:['http://localhost:5173','https://teach-em-client-site.vercel.app'],
     credentials: true
   })
 )
@@ -239,20 +239,24 @@ async function run() {
     })
 
 
-    app.get('/all-class/api/get', async (req, res) => {
+    // ok..
+    app.get('/higest/enroll-class/api/get', async (req, res) => {
       const result = await classessCollection.find().toArray()
       res.send(result)
     })
+
     app.get('/class/api/status/get', async (req, res) => {
       const result = await classessCollection.find({ status: "acceped" }).toArray()
       res.send(result)
     })
+
     app.get('/class/api/get/:id', async (req, res) => {
       const id = req.params.id
       const query = { _id: new ObjectId(id) }
       const result = await classessCollection.findOne(query)
       res.send(result)
     })
+
     app.get('/teacherClass/api/get/:email', async (req, res) => {
       const email = req.params.email
       const query = { teacherEmail: email }
@@ -260,8 +264,6 @@ async function run() {
       const result = await classessCollection.find(query).toArray()
       res.send(result)
     })
-
-
 
     app.delete('/class/api/delete/:id', async (req, res) => {
       const id = req.params.id
@@ -298,6 +300,20 @@ async function run() {
       const result = await classessCollection.updateOne(filter, updatedDoc);
       res.send(result);
     })
+
+    //ok..
+    app.get('/totalData/count/related/api', async (req, res) => {
+     
+        const user = await usersCollection.estimatedDocumentCount();
+        const classes = await classessCollection.estimatedDocumentCount();
+        const enroll = await paymentCollection.estimatedDocumentCount();
+        res.send({
+          user,
+          classes,
+          enroll
+        });
+    
+    });
     // ============= classess related api part end ========================
 
 
