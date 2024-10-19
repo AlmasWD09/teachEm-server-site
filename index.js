@@ -276,7 +276,6 @@ async function run() {
     app.put('/class/api/updated/:id', async (req, res) => { //ok
       const id = req.params.id
       const updateData = req.body
-      console.log(id, updateData);
       const filter = { _id: new ObjectId(id) }
       const options = { upsert: true };
       const updateDoc = {
